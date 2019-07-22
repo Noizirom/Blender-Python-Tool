@@ -1,4 +1,4 @@
-import bpy, bmesh, numpy as np, mathutils, math
+import bpy, bmesh, numpy as np, mathutils, math, os, jason as js
 from copy import deepcopy as dc
 
 
@@ -312,6 +312,42 @@ def if_all(id, collection):
         if all(x in id for x in i) == True:
             Li.append(list(i))
     return dc(Li)
+
+
+###############################################################
+###Math Operations
+###############################################################
+#distance
+def get_dist(a, b):
+    #coordinate a and coordinate b
+    a = np.array(a)
+    b = np.array(b)
+    return np.linalg.norm(a-b)
+
+#angle
+def get_angle(a, b, acute_bool):
+    #coordinate a and coordinate b
+    a = np.array(a)
+    b = np.array(b)
+    ang = np.arccos(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b)))
+    if (acute_bool == True):
+        return ang
+    else:
+        return 2 * np.pi - ang
+
+#line median point
+def get_median(a, b):
+    #coordinate a and coordinate b
+    a = list(a)
+    b = list(b)
+    vec = [[a], [b]]
+    vec = np.array(vec)
+    return np.median(vec, axis=0)
+
+#radius from height and width
+def radius_from(height, width):
+    r = ((height)**2 + (width)**2)/2*(height)
+    return(r)
 
 
 ###############################################################

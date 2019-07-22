@@ -1,4 +1,4 @@
-import bpy, bmesh, numpy as np, mathutils, math, os, jason as js
+import bpy, bmesh, numpy as np, mathutils, math, os, json as js
 from copy import deepcopy as dc
 
 
@@ -105,6 +105,7 @@ def get_gt_lt(colist, axis, var):
 
 #intersection of arrays
 def array_intersect(a, b):
+    #items in a that match in b
     return np.intersect1d(a, b)
 
 #get range of verts in between 2 points
@@ -348,6 +349,103 @@ def get_median(a, b):
 def radius_from(height, width):
     r = ((height)**2 + (width)**2)/2*(height)
     return(r)
+
+#Quadratic Equations
+###############################################################
+
+def quad_split(a, b, c):
+    '''
+    #ax2 + bx +c = 0
+    (x-x1)(x-x2) = 0
+    x2 + 3x – 4 = (x + 4)(x – 1) = 0
+    x = 1 and x = –4
+    '''
+    d = ((b**2) - (4 * a * c)) # discriminant
+    #validate
+    if d < 0:
+        print ("This equation has no real solution")
+    elif d == 0:
+        x1 = (-b + math.sqrt(d)) / (2 * a)
+        x2 = None
+    else:
+        x1 = (-b + math.sqrt(d)) / (2 * a)
+        x2 = (-b - math.sqrt(d)) / (2 * a)
+    return(x1, x2)
+
+def quad(a, b, c, fr=0):
+    '''
+    #ax2 + bx +c = 0
+    a = speed
+    b = initial velocity
+    c = initial height
+    fr = obj.frame_current - obj.frame_start
+    '''
+    #quad expression fo z height
+    obj_z = (a**2 * fr)/2 + (b * fr) + c
+    return(obj_z)
+
+#Trigonometry
+###############################################################
+
+def findAdjacent(opp, ang):
+    #opp = opposite side
+    #ang = angle #radians(ang)
+    adj = (opp / (tan(ang)))
+    return(adj)
+
+def findOpposite(adj, ang):
+    #adj = adjacent side
+    #ang = angle #radians(ang)
+    opp = (adj * (tan(ang)))
+    return(opp)
+
+def hyp(adj, opp):
+    #hypotenuse
+    #adj = adjacent side
+    #opp = opposite side
+    h = sqrt((adj**2) + (opp**2))
+    return(h)
+
+def ang_fr_2_sides(adj, opp):
+    #angle from adjacent and opposite
+    #ang = angle #radians(ang)
+    ang = atan(opp / adj)
+    return(ang)
+
+def rem_rt_ang(ang):
+    #remaining right angle in degrees
+    #ang = angle #radians(ang)
+    a = 180 - 90 - ang
+    return(a)
+    
+#physics
+###############################################################
+
+def phys_time(dist, vel):
+    #dist = distance total
+    #vel = velocity
+    t = (dist / vel)
+    return(t) #time total #delta_x
+
+def phys_dist_drop(time, grav=-9.81):
+    #time = current frames #/ 30 #/ 60
+    #grav = gravity #world gravity
+    d = ((grav / 2) * (time**2))
+    return(d) #delta_y for x
+
+def traj(x, v0, ang, g=9.81):
+    #trajectory
+    #get y at current x
+    '''
+    y = vertical position (m)
+    x = horizontal position (m)
+    v0 = initial velocity (combined components, m/s)
+    g = acceleration due to gravity (9.80 m/s2)
+    ang = angle of the initial velocity from the horizontal plane (radians or degrees)
+    '''
+    y = ((x * tan(ang))- ((g * (x**2)) / ((2 * v0) * ((cos(ang))**2))))
+    return(y) #delta_y for x
+
 
 
 ###############################################################

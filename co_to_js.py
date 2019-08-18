@@ -1,3 +1,4 @@
+
 import bpy, numpy as np, os, json as js
 
 
@@ -12,7 +13,7 @@ def get_co():
     bpy.ops.object.mode_set(mode='OBJECT')
     #vertices
     countv = len(vt)
-    co = np.empty(countv * 3, dtype=np.float32)
+    co = np.empty(countv * 3)
     vt.foreach_get('co', co)
     co.shape = (countv, 3)
     return co
@@ -27,6 +28,7 @@ def write_js(fileName, path, data):
     os.chdir(cwd)    
         
 gc = get_co()
+gc = np.around(gc, decimals=5)
 gc = gc.tolist()
 
 
